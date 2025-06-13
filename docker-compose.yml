@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: devadmin
+      POSTGRES_DB: ai_inventory
+      POSTGRES_PASSWORD: ai_9876inventory
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+
+volumes:
+  db_data:
