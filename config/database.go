@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/farhapartex/ainventory/models"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -38,4 +39,20 @@ func ConnectDB() {
 
 func MigrateDB() {
 	fmt.Println("Migrating database...")
+
+	dbModels := []interface{}{
+		&models.User{},
+	}
+
+	for _, model := range dbModels {
+		err := DB.AutoMigrate(model)
+		if err != nil {
+			log.Fatalf("Error migrating model %T: %v", model, err)
+		} else {
+			log.Printf("Model %T migrated successfully", model)
+		}
+
+	}
+
+	log.Println("Model migration completed!")
 }

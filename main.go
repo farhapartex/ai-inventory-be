@@ -9,6 +9,7 @@ import (
 
 func main() {
 	config.ConnectDB()
+	config.MigrateDB()
 
 	authController := controller.NewAuthController(config.DB)
 
@@ -17,6 +18,12 @@ func main() {
 	router.Use(gin.Recovery()) // Middleware for logging and recovery
 
 	routes.RegisterRoute(router, authController)
+
+	router.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
 
 	router.Run(":8000")
 }
