@@ -67,6 +67,13 @@ func MigrateDB() {
 		&models.ProductPriceHistory{},
 		&models.Supplier{},
 		&models.ProductReview{},
+		&models.Order{},
+		&models.OrderItem{},
+		&models.OrderHistory{},
+		&models.OrderPayment{},
+		&models.OrderShipment{},
+		&models.OrderShipmentItem{},
+		&models.Customer{},
 	}
 
 	for _, model := range dbModels {
