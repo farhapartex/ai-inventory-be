@@ -15,4 +15,6 @@ type User struct {
 	Status                string     `gorm:"size:20;default:active;check:status IN ('active', 'inactive', 'suspended')" json:"status"`
 	EmailVerified         bool       `gorm:"default:false" json:"email_verified"`
 	VerifiedAt            *time.Time `json:"verified_at"`
+	RoleID                uint       `json:"role_id" gorm:"not null;index"`
+	Role                  Role       `json:"role,omitempty" gorm:"foreignKey:RoleID"`
 }
