@@ -41,7 +41,6 @@ func MigrateDB() {
 	fmt.Println("Migrating database...")
 
 	dbModels := []interface{}{
-		&models.User{},
 		&models.Permission{},
 		&models.Role{},
 		&models.RolePermission{},
@@ -49,6 +48,17 @@ func MigrateDB() {
 		&models.PermissionTemplate{},
 		&models.TemplatePermission{},
 		&models.RoleHistory{},
+		&models.Department{},
+		&models.DepartmentRole{},
+		&models.DepartmentHierarchy{},
+		&models.DepartmentBudget{},
+		&models.DepartmentPermission{},
+		&models.DepartmentHistory{},
+		&models.User{},
+		&models.TokenBlacklist{},
+		&models.UserHistory{},
+		&models.UserPermission{},
+		&models.UserProfile{},
 	}
 
 	for _, model := range dbModels {
