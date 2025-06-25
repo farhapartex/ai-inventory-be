@@ -11,15 +11,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthController struct {
-	DB *gorm.DB
-}
+// type AuthController struct {
+// 	DB *gorm.DB
+// }
 
-func NewAuthController(db *gorm.DB) *AuthController {
-	return &AuthController{
-		DB: db,
-	}
-}
+// func NewAuthController(db *gorm.DB) *AuthController {
+// 	return &AuthController{
+// 		DB: db,
+// 	}
+// }
 
 func (ac *AuthController) SignIn(req dto.SignInRequestDTO) (*dto.SignInResponseDTO, error) {
 	req.Email = strings.ToLower((req.Email))
