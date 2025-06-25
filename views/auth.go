@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SignUpView(ctx *gin.Context, ac *controller.AuthController) {
+func SignUpAPIView(ctx *gin.Context, ac *controller.AuthController) {
 	var req dto.SignUpRequestDTO
 	if err := ctx.ShouldBindJSON((&req)); err != nil {
 		ctx.JSON(400, gin.H{
@@ -25,4 +25,23 @@ func SignUpView(ctx *gin.Context, ac *controller.AuthController) {
 	}
 
 	ctx.JSON(http.StatusCreated, response)
+}
+
+func SignInAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	var req dto.SignInRequestDTO
+	if err := ctx.ShouldBindJSON((&req)); err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid input",
+		})
+	}
+
+	response, err := ac.SignIn(req)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

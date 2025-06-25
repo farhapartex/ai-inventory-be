@@ -13,7 +13,16 @@ type SignUpRequestDTO struct {
 	Gender    string `json:"gender" binding:"required,oneof=Male Female Other 'Prefer not to say'"`
 }
 
+type SignInRequestDTO struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+}
+
 type SignUpResponseDTO struct {
 	IsSuccess bool   `json:"is_success"`
 	Message   string `json:"message"`
+}
+
+type SignInResponseDTO struct {
+	Token string `json:"token"`
 }

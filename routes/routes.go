@@ -10,7 +10,10 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 	api := r.Group("/api/v1")
 	{
 		api.POST(("/auth/signup/"), func(ctx *gin.Context) {
-			views.SignUpView(ctx, authController)
+			views.SignUpAPIView(ctx, authController)
+		})
+		api.POST(("/auth/signin/"), func(ctx *gin.Context) {
+			views.SignInAPIView(ctx, authController)
 		})
 	}
 }

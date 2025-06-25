@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -194,7 +193,10 @@ func (u *User) BeforeDelete(tx *gorm.DB) error {
 		Update("employee_count", gorm.Expr("employee_count - 1")).Error
 }
 
+// JWT Claims structure (for reference)
+
 // User methods
+
 func (u *User) IsPasswordExpired() bool {
 	if u.PasswordExpiresAt == nil {
 		return false
@@ -202,19 +204,16 @@ func (u *User) IsPasswordExpired() bool {
 	return time.Now().After(*u.PasswordExpiresAt)
 }
 
-// ShouldChangePassword checks if user should be forced to change password
 func (u *User) ShouldChangePassword() bool {
 	return u.MustChangePassword || u.IsPasswordExpired()
 }
 
-// ResetFailedLoginAttempts resets failed login attempts
 func (u *User) ResetFailedLoginAttempts(tx *gorm.DB) error {
 	u.FailedLoginAttempts = 0
 	u.LastFailedLoginAt = nil
 	return tx.Save(u).Error
 }
 
-// RecordLogin records a successful login
 func (u *User) RecordLogin(tx *gorm.DB, ipAddress string) error {
 	now := time.Now()
 	u.LastLoginAt = &now
@@ -349,17 +348,6 @@ func (u *User) IsActive() bool {
 
 func (u *User) CanLogin() bool {
 	return u.IsActive() && u.EmailVerified
-}
-
-// JWT Claims structure (for reference)
-type JWTClaims struct {
-	UserID       uint   `json:"user_id"`
-	Email        string `json:"email"`
-	RoleID       uint   `json:"role_id"`
-	DepartmentID uint   `json:"department_id"`
-	TokenVersion int    `json:"token_version"`
-	TokenType    string `json:"token_type"` // "access" or "refresh"
-	jwt.RegisteredClaims
 }
 
 func generateUserID(tx *gorm.DB) string {
