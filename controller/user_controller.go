@@ -8,7 +8,7 @@ import (
 	"github.com/farhapartex/ainventory/models"
 )
 
-func (ac *AuthController) UserProfile(userId uint) (*dto.UserProfileResponseDTO, error) {
+func (ac *AuthController) UserProfile(userId uint) (*dto.UserMeResponseDTO, error) {
 	var user models.User
 
 	result := ac.DB.Where("id = ?", userId).First(&user)

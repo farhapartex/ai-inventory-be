@@ -5,8 +5,8 @@ import (
 	"github.com/farhapartex/ainventory/models"
 )
 
-func UserModelToUserProfileDTO(user *models.User) *dto.UserProfileResponseDTO {
-	return &dto.UserProfileResponseDTO{
+func UserModelToUserProfileDTO(user *models.User) *dto.UserMeResponseDTO {
+	return &dto.UserMeResponseDTO{
 		EmployeeID: user.EmployeeID,
 		FirstName:  user.FirstName,
 		LastName:   user.LastName,

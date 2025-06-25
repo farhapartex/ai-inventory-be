@@ -26,7 +26,7 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 	{
 		user := protected.Group("/user")
 		{
-			user.GET(("/profile/"), func(ctx *gin.Context) {
+			user.GET(("/me/"), func(ctx *gin.Context) {
 				views.UserProfileAPIView(ctx, authController)
 			})
 		}
