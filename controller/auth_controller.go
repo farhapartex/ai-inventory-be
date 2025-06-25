@@ -7,7 +7,6 @@ import (
 	"github.com/farhapartex/ainventory/dto"
 	"github.com/farhapartex/ainventory/mapper"
 	"github.com/farhapartex/ainventory/models"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -29,17 +28,10 @@ func (ac *AuthController) SignUp(req dto.SignUpRequestDTO) (*dto.SignUpResponseD
 		return nil, errors.New("email already exists")
 	}
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, errors.New("password hashing failed")
-	}
+	newUser := mapper.SignUpDTOToModel(req)
 
-	newUser := mapper.SignUpDTOToModel(req, string(hashPassword))
-
-	tx := ac.DB.Begin()
-	err = tx.Create(&newUser).Error
-	if err != nil {
-		tx.Rollback()
+	result = ac.DB.Create(&newUser)
+	if result.Error != nil {
 		return nil, errors.New("failed to create user")
 	}
 

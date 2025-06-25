@@ -76,6 +76,8 @@ func MigrateDB() {
 		// &models.OrderShipmentItem{},
 	}
 
+	DB.Migrator().DropTable(&models.User{})
+
 	for _, model := range dbModels {
 		err := DB.AutoMigrate(model)
 		if err != nil {

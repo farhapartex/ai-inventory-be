@@ -24,11 +24,11 @@ type User struct {
 	ZipCode          string     `json:"zip_code" gorm:"size:20"`
 	Country          string     `json:"country" gorm:"size:100;default:'United States'"`
 	DateOfBirth      *time.Time `json:"date_of_birth"`
-	Gender           string     `json:"gender" gorm:"size:20;check:gender IN ('Male', 'Female', 'Other', 'Prefer not to say')"`
-	DepartmentID     uint       `json:"department_id" gorm:"not null;index" binding:"required"`
+	Gender           string     `json:"gender" gorm:"size:20;"`
+	DepartmentID     *uint      `json:"department_id" gorm:"index"`
 	DepartmentRoleID *uint      `json:"department_role_id" gorm:"index"`
 	ManagerID        *uint      `json:"manager_id" gorm:"index"`
-	RoleID           uint       `json:"role_id" gorm:"not null;index" binding:"required"`
+	RoleID           *uint      `json:"role_id" gorm:"index"`
 	JobTitle         string     `json:"job_title" gorm:"size:150"`
 	WorkLocation     string     `json:"work_location" gorm:"size:150;default:'Main Office'"`
 	ContractType     string     `json:"contract_type" gorm:"size:50;default:'Full-time';check:contract_type IN ('Full-time', 'Part-time', 'Contract', 'Intern', 'Consultant')"`
@@ -40,7 +40,7 @@ type User struct {
 	Currency         string     `json:"currency" gorm:"size:3;default:'USD'"`
 	PayGrade         string     `json:"pay_grade" gorm:"size:20"`
 	IsSuperuser      bool       `gorm:"default:false" json:"is_superuser"`
-	Status           string     `gorm:"size:20;default:active;check:status IN ('active', 'inactive', 'suspended', 'pending')" json:"status"`
+	Status           string     `gorm:"size:20;default:active;" json:"status"`
 	EmailVerified    bool       `gorm:"default:false" json:"email_verified"`
 	VerifiedAt       *time.Time `json:"verified_at"`
 
@@ -77,13 +77,13 @@ type User struct {
 	EmergencyContactPhone    string `json:"emergency_contact_phone" gorm:"size:20"`
 	EmergencyContactRelation string `json:"emergency_contact_relation" gorm:"size:50"`
 
-	CreatedBy       uint             `json:"created_by" gorm:"index"`
+	CreatedBy       *uint            `json:"created_by" gorm:"index"`
 	JoinedAt        time.Time        `gorm:"default:CURRENT_TIMESTAMP" json:"joined_at"`
 	CreatedAt       time.Time        `json:"created_at"`
 	UpdatedAt       time.Time        `json:"updated_at"`
 	DeletedAt       gorm.DeletedAt   `json:"deleted_at,omitempty" gorm:"index"`
-	Role            Role             `json:"role,omitempty" gorm:"foreignKey:RoleID"`
-	Department      Department       `json:"department,omitempty" gorm:"foreignKey:DepartmentID"`
+	Role            *Role            `json:"role,omitempty" gorm:"foreignKey:RoleID"`
+	Department      *Department      `json:"department,omitempty" gorm:"foreignKey:DepartmentID"`
 	DepartmentRole  *DepartmentRole  `json:"department_role,omitempty" gorm:"foreignKey:DepartmentRoleID"`
 	Manager         *User            `json:"manager,omitempty" gorm:"foreignKey:ManagerID"`
 	DirectReports   []User           `json:"direct_reports,omitempty" gorm:"foreignKey:ManagerID"`
@@ -159,8 +159,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 		u.EmployeeID = generateEmployeeID(tx)
 	}
 
-	// Hash password if not already hashed
-	if len(u.Password) < 60 { // bcrypt hash is 60 chars
+	if len(u.Password) < 60 {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return err
@@ -171,10 +170,10 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-func (u *User) AfterCreate(tx *gorm.DB) error {
-	return tx.Model(&Department{}).Where("id = ?", u.DepartmentID).
-		Update("employee_count", gorm.Expr("employee_count + 1")).Error
-}
+// func (u *User) AfterCreate(tx *gorm.DB) error {
+// 	return tx.Model(&Department{}).Where("id = ?", u.DepartmentID).
+// 		Update("employee_count", gorm.Expr("employee_count + 1")).Error
+// }
 
 func (u *User) BeforeUpdate(tx *gorm.DB) error {
 	if u.Password != "" && len(u.Password) < 60 {
