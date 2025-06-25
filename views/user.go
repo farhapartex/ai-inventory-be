@@ -4,25 +4,34 @@ import (
 	"net/http"
 
 	"github.com/farhapartex/ainventory/controller"
-	"github.com/farhapartex/ainventory/dto"
+	"github.com/farhapartex/ainventory/models"
 	"github.com/gin-gonic/gin"
 )
 
 func UserProfileAPIView(ctx *gin.Context, ac *controller.AuthController) {
-	var req dto.SignUpRequestDTO
-	if err := ctx.ShouldBindJSON((&req)); err != nil {
-		ctx.JSON(400, gin.H{
-			"error": "Invalid input",
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Use not found, need user login",
 		})
+		return
+	}
+	userMode, ok := user.(models.User)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Need user login",
+		})
+		return
 	}
 
-	response, err := ac.SignUp(req)
+	resp, err := ac.UserProfile(userMode.ID)
+
 	if err != nil {
-		ctx.JSON(400, gin.H{
+		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, response)
+	ctx.JSON(http.StatusOK, resp)
 }

@@ -7,7 +7,6 @@ import (
 
 func UserModelToUserProfileDTO(user *models.User) *dto.UserProfileResponseDTO {
 	return &dto.UserProfileResponseDTO{
-		ID:         user.ID,
 		EmployeeID: user.EmployeeID,
 		FirstName:  user.FirstName,
 		LastName:   user.LastName,

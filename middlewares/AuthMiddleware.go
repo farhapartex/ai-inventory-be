@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -12,6 +13,8 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("Inside of AuthMiddleware")
+
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
@@ -48,6 +51,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		fmt.Println("User authenticated successfully:", user.Email)
 		c.Set("user", user)
 		c.Set("userId", user.ID)
 
