@@ -89,22 +89,22 @@ type TemplatePermission struct {
 	Permission Permission         `json:"permission,omitempty" gorm:"foreignKey:PermissionID"`
 }
 
-type RoleHistory struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	RoleID      uint      `json:"role_id" gorm:"not null;index"`
-	Action      string    `json:"action" gorm:"not null;size:50"` // CREATE, UPDATE, DELETE, PERMISSION_GRANT, PERMISSION_REVOKE
-	FieldName   string    `json:"field_name" gorm:"size:50"`
-	OldValue    string    `json:"old_value" gorm:"type:text"`
-	NewValue    string    `json:"new_value" gorm:"type:text"`
-	ChangedByID uint      `json:"changed_by" gorm:"not null;index"`
-	Reason      string    `json:"reason" gorm:"size:500"`
-	IPAddress   string    `json:"ip_address" gorm:"size:45"`
-	UserAgent   string    `json:"user_agent" gorm:"size:500"`
-	CreatedAt   time.Time `json:"created_at"`
+// type RoleHistory struct {
+// 	ID          uint      `json:"id" gorm:"primaryKey"`
+// 	RoleID      uint      `json:"role_id" gorm:"not null;index"`
+// 	Action      string    `json:"action" gorm:"not null;size:50"` // CREATE, UPDATE, DELETE, PERMISSION_GRANT, PERMISSION_REVOKE
+// 	FieldName   string    `json:"field_name" gorm:"size:50"`
+// 	OldValue    string    `json:"old_value" gorm:"type:text"`
+// 	NewValue    string    `json:"new_value" gorm:"type:text"`
+// 	ChangedByID uint      `json:"changed_by" gorm:"not null;index"`
+// 	Reason      string    `json:"reason" gorm:"size:500"`
+// 	IPAddress   string    `json:"ip_address" gorm:"size:45"`
+// 	UserAgent   string    `json:"user_agent" gorm:"size:500"`
+// 	CreatedAt   time.Time `json:"created_at"`
 
-	Role      Role `json:"role,omitempty" gorm:"foreignKey:RoleID"`
-	ChangedBy User `json:"changed_by_user,omitempty" gorm:"foreignKey:ChangedBy"`
-}
+// 	Role      Role `json:"role,omitempty" gorm:"foreignKey:RoleID"`
+// 	ChangedBy User `json:"changed_by_user,omitempty" gorm:"foreignKey:ChangedBy"`
+// }
 
 func (r *Role) BeforeCreate(tx *gorm.DB) error {
 	if r.IsDefault {

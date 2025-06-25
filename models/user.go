@@ -44,7 +44,6 @@ type User struct {
 	EmailVerified    bool       `gorm:"default:false" json:"email_verified"`
 	VerifiedAt       *time.Time `json:"verified_at"`
 
-	// Security & Login Information (JWT-optimized)
 	TwoFactorEnabled       bool       `json:"two_factor_enabled" gorm:"default:false"`
 	TwoFactorSecret        string     `json:"two_factor_secret,omitempty" gorm:"size:255"`
 	BackupCodes            string     `json:"backup_codes,omitempty" gorm:"type:text"`
@@ -65,23 +64,19 @@ type User struct {
 	MarketingOptIn         bool       `json:"marketing_opt_in" gorm:"default:true"`
 	NewsletterSubscription bool       `json:"newsletter_subscription" gorm:"default:false"`
 
-	// Additional Information
 	Notes         string `json:"notes" gorm:"type:text"`
 	ReferredBy    *uint  `json:"referred_by" gorm:"index"`
 	Source        string `json:"source" gorm:"size:100"`
 	LoyaltyPoints int    `json:"loyalty_points" gorm:"default:0"`
 
-	// Social Media & External Links
 	LinkedInProfile string `json:"linkedin_profile" gorm:"size:255"`
 	TwitterHandle   string `json:"twitter_handle" gorm:"size:100"`
 	Website         string `json:"website" gorm:"size:255"`
 
-	// Emergency Contact
 	EmergencyContactName     string `json:"emergency_contact_name" gorm:"size:200"`
 	EmergencyContactPhone    string `json:"emergency_contact_phone" gorm:"size:20"`
 	EmergencyContactRelation string `json:"emergency_contact_relation" gorm:"size:50"`
 
-	// System Metadata
 	CreatedBy       uint             `json:"created_by" gorm:"index"`
 	JoinedAt        time.Time        `gorm:"default:CURRENT_TIMESTAMP" json:"joined_at"`
 	CreatedAt       time.Time        `json:"created_at"`

@@ -67,13 +67,13 @@ type Order struct {
 	UpdatedAt  time.Time      `json:"updated_at"`
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 
-	Customer     Customer        `json:"customer,omitempty" gorm:"foreignKey:CustomerID"`
-	Creator      *User           `json:"creator,omitempty" gorm:"foreignKey:CreatedBy"`
-	AssignedUser *User           `json:"assigned_user,omitempty" gorm:"foreignKey:AssignedTo"`
-	OrderItems   []OrderItem     `json:"order_items,omitempty" gorm:"foreignKey:OrderID"`
-	OrderHistory []OrderHistory  `json:"order_history,omitempty" gorm:"foreignKey:OrderID"`
-	Payments     []OrderPayment  `json:"payments,omitempty" gorm:"foreignKey:OrderID"`
-	Shipments    []OrderShipment `json:"shipments,omitempty" gorm:"foreignKey:OrderID"`
+	Customer     Customer `json:"customer,omitempty" gorm:"foreignKey:CustomerID"`
+	Creator      *User    `json:"creator,omitempty" gorm:"foreignKey:CreatedBy"`
+	AssignedUser *User    `json:"assigned_user,omitempty" gorm:"foreignKey:AssignedTo"`
+	//OrderItems   []OrderItem     `json:"order_items,omitempty" gorm:"foreignKey:OrderID"`
+	//OrderHistory []OrderHistory  `json:"order_history,omitempty" gorm:"foreignKey:OrderID"`
+	//Payments     []OrderPayment  `json:"payments,omitempty" gorm:"foreignKey:OrderID"`
+	//Shipments    []OrderShipment `json:"shipments,omitempty" gorm:"foreignKey:OrderID"`
 }
 
 type OrderItem struct {
@@ -205,7 +205,7 @@ type Customer struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 
-	Orders             []Order   `json:"orders,omitempty" gorm:"foreignKey:CustomerID"`
+	//Orders             []Order   `json:"orders,omitempty" gorm:"foreignKey:CustomerID"`
 	ReferredByCustomer *Customer `json:"referred_by_customer,omitempty" gorm:"foreignKey:ReferredBy"`
 	Creator            *User     `json:"creator,omitempty" gorm:"foreignKey:CreatedBy"`
 }
