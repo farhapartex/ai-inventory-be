@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/farhapartex/ainventory/config"
 	"github.com/farhapartex/ainventory/controller"
+	"github.com/farhapartex/ainventory/middlewares"
 	"github.com/farhapartex/ainventory/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,8 @@ func main() {
 
 	router := gin.Default()
 	router.Use(gin.Logger())
-	router.Use(gin.Recovery()) // Middleware for logging and recovery
+	router.Use(gin.Recovery())
+	router.Use(middlewares.CORSMiddleware())
 
 	routes.RegisterRoute(router, authController)
 

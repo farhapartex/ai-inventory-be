@@ -11,16 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// type AuthController struct {
-// 	DB *gorm.DB
-// }
-
-// func NewAuthController(db *gorm.DB) *AuthController {
-// 	return &AuthController{
-// 		DB: db,
-// 	}
-// }
-
 func (ac *AuthController) SignIn(req dto.SignInRequestDTO) (*dto.SignInResponseDTO, error) {
 	req.Email = strings.ToLower((req.Email))
 	var user models.User
@@ -28,7 +18,7 @@ func (ac *AuthController) SignIn(req dto.SignInRequestDTO) (*dto.SignInResponseD
 
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
-			return nil, errors.New("user not found")
+			return nil, errors.New("Invalid email or password")
 		}
 		return nil, errors.New("failed to retrieve user")
 	}
