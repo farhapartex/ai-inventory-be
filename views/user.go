@@ -4,27 +4,19 @@ import (
 	"net/http"
 
 	"github.com/farhapartex/ainventory/controller"
-	"github.com/farhapartex/ainventory/models"
+	"github.com/farhapartex/ainventory/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func UserProfileAPIView(ctx *gin.Context, ac *controller.AuthController) {
-	user, exists := ctx.Get("user")
-	if !exists {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Use not found, need user login",
-		})
-		return
-	}
-	userMode, ok := user.(models.User)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Need user login",
-		})
+
+	user, err := utils.GetAuthenticatedUser(ctx)
+	if err != nil {
+		utils.HandleAuthError(ctx, err)
 		return
 	}
 
-	resp, err := ac.UserProfile(userMode.ID)
+	resp, err := ac.UserProfile(user.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -34,4 +26,12 @@ func UserProfileAPIView(ctx *gin.Context, ac *controller.AuthController) {
 	}
 
 	ctx.JSON(http.StatusOK, resp)
+}
+
+func UserOnboardAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	user, err := utils.GetAuthenticatedUser(ctx)
+	if err != nil {
+		utils.HandleAuthError(ctx, err)
+		return
+	}
 }

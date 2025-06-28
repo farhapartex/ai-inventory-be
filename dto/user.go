@@ -7,3 +7,14 @@ type UserMeResponseDTO struct {
 	Email         string            `json:"email"`
 	Organizations []OrganizationDTO `json:"organizations"`
 }
+
+type UserOnboardRequestDTO struct {
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Organization string `json:"organization"`
+	Address      string `json:"address"`
+	City         string `json:"city"`
+	State        string `json:"state"`
+	ZipCode      string `json:"zip_code"`
+	Country      string `json:"country"`
+}
