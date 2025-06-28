@@ -14,5 +14,5 @@ type Organization struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 
-	Owner User `json:"owner" gorm:"foreignKey:OwnerID"`
+	Owner User `json:"owner" gorm:"foreignKey:OwnerID;references:ID"`
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/farhapartex/ainventory/dto"
 	"github.com/farhapartex/ainventory/mapper"
@@ -23,27 +24,35 @@ func (ac *AuthController) UserProfile(userId uint) (*dto.UserMeResponseDTO, erro
 func (ac *AuthController) UserOnboard(user *models.User, req dto.UserOnboardRequestDTO) (*dto.UserOnboardResponseDTO, error) {
 	tx := ac.DB.Begin()
 	if tx.Error != nil {
-		return nil, errors.New("failed to start transaction")
+		return nil, errors.New("Failed to start transaction")
 	}
 
-	user.FirstName = req.FirstName
-	user.LastName = req.LastName
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	user.FirstName = strings.TrimSpace(req.FirstName)
+	user.LastName = strings.TrimSpace(req.LastName)
+
 	if err := tx.Save(user).Error; err != nil {
 		tx.Rollback()
-		return nil, errors.New("failed to update user")
+		return nil, errors.New("Failed to update user")
 	}
 
 	organization := models.Organization{
-		Name:    req.Organization,
-		Address: req.Address,
-		City:    req.City,
-		State:   req.State,
-		ZipCode: req.ZipCode,
-		Country: req.Country,
+		Name:    strings.TrimSpace(req.Organization),
+		Address: strings.TrimSpace(req.Address),
+		City:    strings.TrimSpace(req.City),
+		State:   strings.TrimSpace(req.State),
+		ZipCode: strings.TrimSpace(req.ZipCode),
+		Country: strings.TrimSpace(req.Country),
+		OwnerID: user.ID,
 	}
 	if err := tx.Create(&organization).Error; err != nil {
 		tx.Rollback()
-		return nil, errors.New("failed to create organization")
+		return nil, errors.New("Failed to create organization")
 	}
 
 	if err := tx.Commit().Error; err != nil {
