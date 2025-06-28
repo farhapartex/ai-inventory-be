@@ -60,6 +60,7 @@ func MigrateDB() {
 		&models.UserPermission{},
 		&models.UserProfile{},
 		&models.Customer{},
+		&models.Organization{},
 		// &models.Product{},
 		// &models.ProductCategory{},
 		// &models.ProductImage{},
