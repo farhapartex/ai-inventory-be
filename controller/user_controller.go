@@ -11,7 +11,7 @@ import (
 func (ac *AuthController) UserProfile(userId uint) (*dto.UserMeResponseDTO, error) {
 	var user models.User
 
-	result := ac.DB.Where("id = ?", userId).First(&user)
+	result := ac.DB.Where("id = ?", userId).Preload("Organizations").First(&user)
 
 	if result.RowsAffected == 0 {
 		return nil, errors.New("user not found")

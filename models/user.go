@@ -91,6 +91,7 @@ type User struct {
 	UserHistory     []UserHistory    `json:"user_history,omitempty" gorm:"foreignKey:UserID"`
 	UserPermissions []UserPermission `json:"user_permissions,omitempty" gorm:"foreignKey:UserID"`
 	TokenBlacklist  []TokenBlacklist `json:"token_blacklist,omitempty" gorm:"foreignKey:UserID"`
+	Organizations   []Organization   `json:"organizations" gorm:"foreignKey:OwnerID"`
 }
 
 type TokenBlacklist struct {
