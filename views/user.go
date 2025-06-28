@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/farhapartex/ainventory/controller"
+	"github.com/farhapartex/ainventory/dto"
 	"github.com/farhapartex/ainventory/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +35,21 @@ func UserOnboardAPIView(ctx *gin.Context, ac *controller.AuthController) {
 		utils.HandleAuthError(ctx, err)
 		return
 	}
+
+	var req dto.UserOnboardRequestDTO
+	if err := ctx.ShouldBindJSON((&req)); err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid input",
+		})
+	}
+
+	resp, err := ac.UserOnboard(user, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, resp)
 }

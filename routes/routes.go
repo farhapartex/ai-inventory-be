@@ -29,6 +29,10 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 			user.GET(("/me/"), func(ctx *gin.Context) {
 				views.UserProfileAPIView(ctx, authController)
 			})
+
+			user.GET(("/onboard/"), func(ctx *gin.Context) {
+				views.UserOnboardAPIView(ctx, authController)
+			})
 		}
 	}
 }
