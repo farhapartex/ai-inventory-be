@@ -34,5 +34,11 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 				views.UserOnboardAPIView(ctx, authController)
 			})
 		}
+		product := protected.Group("/product")
+		{
+			product.GET(("/categories/"), func(ctx *gin.Context) {
+				views.ProductCategoryListAPIView(ctx, authController)
+			})
+		}
 	}
 }
