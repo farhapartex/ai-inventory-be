@@ -1,14 +1,14 @@
 package dto
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"time"
 )
 
 type ProductCategoryRequestDTO struct {
 	Name        string `json:"name" binding:"required,min=2,max=100" validate:"required,min=2,max=100"`
-	Code        string `json:"code" binding:"required,min=2,max=20,alphanum_underscore" validate:"required,min=2,max=20"`
+	Code        string `json:"code" binding:"required,min=2,max=20,alphanum" validate:"required,min=2,max=20"`
 	Description string `json:"description" binding:"omitempty,max=500" validate:"omitempty,max=500"`
 	ParentID    *uint  `json:"parent_id" binding:"omitempty,min=1" validate:"omitempty,min=1"`
 	SortOrder   int    `json:"sort_order" binding:"omitempty,min=0,max=9999" validate:"omitempty,min=0,max=9999"`
@@ -49,7 +49,7 @@ func (dto *ProductCategoryRequestDTO) Validate() error {
 	if dto.Code != "" {
 		for _, char := range dto.Code {
 			if !((char >= 'A' && char <= 'Z') || (char >= '0' && char <= '9') || char == '_') {
-				return fmt.Errorf("code must contain only uppercase letters, numbers, and underscores")
+				return errors.New("code must contain only uppercase letters, numbers, and underscores")
 			}
 		}
 	}

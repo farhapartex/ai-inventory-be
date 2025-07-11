@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/farhapartex/ainventory/controller"
+	"github.com/farhapartex/ainventory/dto"
 	"github.com/farhapartex/ainventory/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +35,24 @@ func ProductCategoryListAPIView(ctx *gin.Context, ac *controller.AuthController)
 	}
 
 	ctx.JSON(http.StatusOK, resp)
+}
+
+func ProductCategoryCreateAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	var request dto.ProductCategoryRequestDTO
+	if err := ctx.ShouldBindJSON((&request)); err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid input",
+		})
+		return
+	}
+
+	response, err := ac.CreateProductCategoryController(request)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, response)
 }

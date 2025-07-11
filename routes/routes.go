@@ -39,6 +39,9 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 			product.GET(("/categories/"), func(ctx *gin.Context) {
 				views.ProductCategoryListAPIView(ctx, authController)
 			})
+			product.POST(("/categories/"), func(ctx *gin.Context) {
+				views.ProductCategoryCreateAPIView(ctx, authController)
+			})
 		}
 	}
 }
