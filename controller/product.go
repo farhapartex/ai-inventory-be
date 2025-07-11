@@ -8,8 +8,11 @@ import (
 	"github.com/farhapartex/ainventory/models"
 )
 
-func (ac *AuthController) ProductCategoryList(page, pageSize int) (*[]dto.ProductCategoryResponseDTO, error) {
+func (ac *AuthController) ProductCategoryList(page, pageSize int) (*dto.PaginatedResponse, error) {
 	var categories []models.ProductCategory
+	var totalCount int64
+
+	ac.DB.Model(&models.ProductCategory{}).Count(&totalCount)
 
 	offset := (page - 1) * pageSize
 	query := ac.DB.Model(&models.ProductCategory{})
@@ -33,7 +36,15 @@ func (ac *AuthController) ProductCategoryList(page, pageSize int) (*[]dto.Produc
 		responseDTOs = append(responseDTOs, dto)
 	}
 
-	return &responseDTOs, nil
+	return &dto.PaginatedResponse{
+		Data:       responseDTOs,
+		TotalPages: totalCount,
+		Page:       page,
+		PageSize:   pageSize,
+		Total:      len(responseDTOs),
+	}, nil
+
+	//return &responseDTOs, nil
 }
 
 func (ac *AuthController) CreateProductCategoryController(request dto.ProductCategoryRequestDTO) (*dto.ProductCategoryResponseDTO, error) {
