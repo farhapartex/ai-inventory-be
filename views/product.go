@@ -56,3 +56,55 @@ func ProductCategoryCreateAPIView(ctx *gin.Context, ac *controller.AuthControlle
 
 	ctx.JSON(http.StatusCreated, response)
 }
+
+func ProductCategoryUpdateAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	categoryIDStr := ctx.Param("id")
+	categoryID, err := strconv.ParseUint(categoryIDStr, 10, 32)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid category ID",
+		})
+		return
+	}
+
+	var request dto.ProductCategoryRequestDTO
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid input",
+		})
+		return
+	}
+
+	response, err := ac.UpdateProductCategoryController(uint(categoryID), request)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
+
+func ProductCategoryDeleteAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	categoryIDStr := ctx.Param("id")
+	categoryID, err := strconv.ParseUint(categoryIDStr, 10, 32)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": "Invalid category ID",
+		})
+		return
+	}
+
+	err = ac.DeleteProductCategoryController(uint(categoryID))
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Category deleted successfully",
+	})
+}

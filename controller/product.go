@@ -79,3 +79,88 @@ func (ac *AuthController) CreateProductCategoryController(request dto.ProductCat
 
 	return mapper.ProductCategoryModelToDTO(*newRow), nil
 }
+
+func (ac *AuthController) UpdateProductCategoryController(
+	categoryID uint,
+	request dto.ProductCategoryRequestDTO,
+) (*dto.ProductCategoryResponseDTO, error) {
+	var category models.ProductCategory
+
+	result := ac.DB.Where("id = ?", categoryID).First(&category)
+	if result.RowsAffected == 0 {
+		return nil, errors.New("category not found")
+	}
+
+	var existingCategory models.ProductCategory
+	result = ac.DB.Where("code = ? AND id != ?", request.Code, categoryID).First(&existingCategory)
+	if result.RowsAffected > 0 {
+		return nil, errors.New("category code already exists")
+	}
+
+	if request.ParentID != nil {
+		var parentCategory models.ProductCategory
+		result = ac.DB.Where("id = ?", request.ParentID).First(&parentCategory)
+		if result.RowsAffected == 0 {
+			return nil, errors.New("parent category does not exist")
+		}
+
+		if *request.ParentID == categoryID {
+			return nil, errors.New("category cannot be its own parent")
+		}
+	}
+
+	err := request.Validate()
+	if err != nil {
+		return nil, err
+	}
+	request.Normalize()
+
+	updateData := mapper.ProductCategoryDTOToModel(request)
+	updateData.ID = categoryID
+
+	result = ac.DB.Model(&category).Updates(updateData)
+	if result.Error != nil {
+		return nil, errors.New("failed to update category")
+	}
+
+	result = ac.DB.Where("id = ?", categoryID).First(&category)
+	if result.Error != nil {
+		return nil, errors.New("failed to fetch updated category")
+	}
+
+	return mapper.ProductCategoryModelToDTO(category), nil
+}
+
+func (ac *AuthController) DeleteProductCategoryController(categoryID uint) error {
+	var category models.ProductCategory
+
+	result := ac.DB.Where("id = ?", categoryID).First(&category)
+	if result.RowsAffected == 0 {
+		return errors.New("category not found")
+	}
+
+	var productCount int64
+	result = ac.DB.Model(&models.Product{}).Where("category_id = ?", categoryID).Count(&productCount)
+	if result.Error != nil {
+		return errors.New("Failed to check products")
+	}
+	if productCount > 0 {
+		return errors.New("Cannot delete category with associated products")
+	}
+
+	var childCount int64
+	result = ac.DB.Model(&models.ProductCategory{}).Where("parent_id = ?", categoryID).Count(&childCount)
+	if result.Error != nil {
+		return errors.New("Failed to check child categories")
+	}
+	if childCount > 0 {
+		return errors.New("Cannot delete category with child categories")
+	}
+
+	result = ac.DB.Delete(&category)
+	if result.Error != nil {
+		return errors.New("Failed to delete category")
+	}
+
+	return nil
+}
