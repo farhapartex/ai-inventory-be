@@ -26,6 +26,8 @@ func (ac *AuthController) ProductCategoryList(page, pageSize int) (*dto.Paginate
 		dto := dto.ProductCategoryResponseDTO{
 			ID:           category.ID,
 			Name:         category.Name,
+			Code:         category.Code,
+			Description:  category.Description,
 			ParentID:     category.ParentID,
 			SortOrder:    category.SortOrder,
 			IsActive:     category.IsActive,
