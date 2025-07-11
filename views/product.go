@@ -108,3 +108,39 @@ func ProductCategoryDeleteAPIView(ctx *gin.Context, ac *controller.AuthControlle
 		"message": "Category deleted successfully",
 	})
 }
+
+func SupplierListAPIView(ctx *gin.Context, ac *controller.AuthController) {
+	// user, err := utils.GetAuthenticatedUser(ctx)
+	// if err != nil {
+	// 	utils.HandleAuthError(ctx, err)
+	// 	return
+	// }
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(ctx.DefaultQuery("pageSize", "10"))
+
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 10
+	}
+
+	queryParams := dto.ListQueryDTO{
+		Page:     page,
+		PageSize: pageSize,
+		Status:   ctx.Query("status"),
+		Search:   ctx.Query("search"),
+		SortBy:   ctx.Query("sortBy"),
+		SortDir:  ctx.Query("sortDir"),
+	}
+
+	resp, err := ac.SupplierList(queryParams)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, resp)
+}

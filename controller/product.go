@@ -2,6 +2,8 @@ package controller
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/farhapartex/ainventory/dto"
 	"github.com/farhapartex/ainventory/mapper"
@@ -45,8 +47,6 @@ func (ac *AuthController) ProductCategoryList(page, pageSize int) (*dto.Paginate
 		PageSize:   pageSize,
 		Total:      len(responseDTOs),
 	}, nil
-
-	//return &responseDTOs, nil
 }
 
 func (ac *AuthController) CreateProductCategoryController(request dto.ProductCategoryRequestDTO) (*dto.ProductCategoryResponseDTO, error) {
@@ -163,4 +163,60 @@ func (ac *AuthController) DeleteProductCategoryController(categoryID uint) error
 	}
 
 	return nil
+}
+
+func (ac *AuthController) SupplierList(queryParams dto.ListQueryDTO) (*dto.PaginatedResponse, error) {
+	var suppliers []models.Supplier
+	var totalCount int64
+
+	query := ac.DB.Model(&models.Supplier{})
+
+	// if queryParams.Status != "" {
+	// 	query = query.Where("status = ?", queryParams.Status)
+	// }
+
+	// if queryParams.Search != "" {
+	// 	searchTerm := "%" + queryParams.Search + "%"
+	// 	query = query.Where("name ILIKE ? OR code ILIKE ? OR contact_person ILIKE ? OR email ILIKE ?",
+	// 		searchTerm, searchTerm, searchTerm, searchTerm)
+	// }
+
+	err := query.Count(&totalCount).Error
+	if err != nil {
+		return nil, errors.New("error counting suppliers")
+	}
+
+	// Apply sorting
+	sortBy := "created_at"
+	sortDir := "desc"
+	if queryParams.SortBy != "" {
+		sortBy = queryParams.SortBy
+	}
+	if queryParams.SortDir != "" && strings.ToLower(queryParams.SortDir) == "asc" {
+		sortDir = "asc"
+	}
+	query = query.Order(fmt.Sprintf("%s %s", sortBy, sortDir))
+
+	offset := (queryParams.Page - 1) * queryParams.PageSize
+	err = query.Offset(offset).Limit(queryParams.PageSize).Preload("Creator").Find(&suppliers).Error
+	if err != nil {
+		return nil, errors.New("error retrieving suppliers")
+	}
+
+	var responseDTOs []dto.SupplierResponseDTO
+	for _, supplier := range suppliers {
+		var productCount int64
+		ac.DB.Model(&models.Product{}).Where("supplier_id = ?", supplier.ID).Count(&productCount)
+		responseDTOs = append(responseDTOs, *mapper.SupplierModelToDTO(supplier, int(productCount)))
+	}
+
+	totalPages := (totalCount + int64(queryParams.PageSize) - 1) / int64(queryParams.PageSize)
+
+	return &dto.PaginatedResponse{
+		Data:       responseDTOs,
+		TotalPages: totalPages,
+		Page:       queryParams.Page,
+		PageSize:   queryParams.PageSize,
+		Total:      len(responseDTOs),
+	}, nil
 }

@@ -48,6 +48,9 @@ func RegisterRoute(r *gin.Engine, authController *controller.AuthController) {
 			product.DELETE(("/categories/:id"), func(ctx *gin.Context) {
 				views.ProductCategoryDeleteAPIView(ctx, authController)
 			})
+			product.GET(("/suppliers/"), func(ctx *gin.Context) {
+				views.SupplierListAPIView(ctx, authController)
+			})
 		}
 	}
 }

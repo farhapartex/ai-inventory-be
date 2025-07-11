@@ -56,3 +56,50 @@ func (dto *ProductCategoryRequestDTO) Validate() error {
 
 	return nil
 }
+
+type SupplierCreateDTO struct {
+	Name              string   `json:"name" binding:"required"`
+	Code              string   `json:"code" binding:"required"`
+	ContactPerson     string   `json:"contact_person"`
+	Email             string   `json:"email"`
+	Phone             string   `json:"phone"`
+	Website           string   `json:"website"`
+	Address           string   `json:"address"`
+	City              string   `json:"city"`
+	State             string   `json:"state"`
+	ZipCode           string   `json:"zip_code"`
+	Country           string   `json:"country"`
+	TaxID             string   `json:"tax_id"`
+	PaymentTerms      string   `json:"payment_terms"`
+	Currency          string   `json:"currency"`
+	MinimumOrderValue *float64 `json:"minimum_order_value"`
+	Status            string   `json:"status"`
+	Rating            *float64 `json:"rating"`
+	Notes             string   `json:"notes"`
+}
+
+type SupplierResponseDTO struct {
+	ID                uint      `json:"id"`
+	Name              string    `json:"name"`
+	Code              string    `json:"code"`
+	ContactPerson     string    `json:"contact_person"`
+	Email             string    `json:"email"`
+	Phone             string    `json:"phone"`
+	Website           string    `json:"website"`
+	Address           string    `json:"address"`
+	City              string    `json:"city"`
+	State             string    `json:"state"`
+	ZipCode           string    `json:"zip_code"`
+	Country           string    `json:"country"`
+	TaxID             string    `json:"tax_id"`
+	PaymentTerms      string    `json:"payment_terms"`
+	Currency          string    `json:"currency"`
+	MinimumOrderValue *float64  `json:"minimum_order_value"`
+	Status            string    `json:"status"`
+	Rating            *float64  `json:"rating"`
+	Notes             string    `json:"notes"`
+	CreatedBy         uint      `json:"created_by"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+	ProductCount      int       `json:"product_count"`
+}

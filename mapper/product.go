@@ -36,3 +36,33 @@ func ProductCategoryModelToDTO(data models.ProductCategory) *dto.ProductCategory
 		UpdatedAt:   data.UpdatedAt,
 	}
 }
+
+func SupplierModelToDTO(supplier models.Supplier, productCount int) *dto.SupplierResponseDTO {
+	dto := dto.SupplierResponseDTO{
+		ID:                supplier.ID,
+		Name:              supplier.Name,
+		Code:              supplier.Code,
+		ContactPerson:     supplier.ContactPerson,
+		Email:             supplier.Email,
+		Phone:             supplier.Phone,
+		Website:           supplier.Website,
+		Address:           supplier.Address,
+		City:              supplier.City,
+		State:             supplier.State,
+		ZipCode:           supplier.ZipCode,
+		Country:           supplier.Country,
+		TaxID:             supplier.TaxID,
+		PaymentTerms:      supplier.PaymentTerms,
+		Currency:          supplier.Currency,
+		MinimumOrderValue: supplier.MinimumOrderValue,
+		Status:            supplier.Status,
+		Rating:            supplier.Rating,
+		Notes:             supplier.Notes,
+		CreatedBy:         supplier.CreatedBy,
+		CreatedAt:         supplier.CreatedAt,
+		UpdatedAt:         supplier.UpdatedAt,
+		ProductCount:      productCount,
+	}
+
+	return &dto
+}
